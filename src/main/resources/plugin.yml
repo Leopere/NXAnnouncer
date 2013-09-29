@@ -1,0 +1,5 @@
+main: com.projectbarks.barksautoannouncer.BarksSimpleAnnouncer
+name: BarksSimpleAnnouncer
+version: 0.2
+author: ProjectBarks
+description: Simple Announcer Plugin.
