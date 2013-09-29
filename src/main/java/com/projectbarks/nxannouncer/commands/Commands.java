@@ -2,9 +2,9 @@ package com.projectbarks.nxannouncer.commands;
 
 import com.projectbarks.nxannouncer.NXAnnouncer;
 import com.projectbarks.nxannouncer.announcer.Announcement;
+import com.projectbarks.nxannouncer.announcer.Timer;
 import com.projectbarks.nxannouncer.config.Config;
 import com.projectbarks.nxannouncer.config.MessageManager;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,7 +29,7 @@ public class Commands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender cs, Command cmd, String string, String[] args) {
         String cName = cmd.getName();
-        if (cName.equalsIgnoreCase("announcer") || cName.equalsIgnoreCase("BarksSimpleAnnouncer")) {
+        if (cName.equalsIgnoreCase("announcer") || cName.equalsIgnoreCase("nxannouncer")) {
             if (args.length > 0) {
                 String function = args[0];
                 if (function.equalsIgnoreCase("help") || function.equalsIgnoreCase("?")) {
@@ -51,7 +51,7 @@ public class Commands implements CommandExecutor {
                     }
                 } else if (function.equalsIgnoreCase("view")) {
                     if (args.length > 1) {
-                        int location = 0;
+                        int location;
                         try {
                             location = Integer.parseInt(args[1]);
                         } catch (NumberFormatException e) {
@@ -70,7 +70,7 @@ public class Commands implements CommandExecutor {
                     }
                 } else if (function.equalsIgnoreCase("broadcast")) {
                     if (args.length > 1) {
-                        int location = 0;
+                        int location;
                         try {
                             location = Integer.parseInt(args[1]);
                         } catch (NumberFormatException e) {
@@ -95,6 +95,13 @@ public class Commands implements CommandExecutor {
                 } else if (function.equalsIgnoreCase("reload")) {
                     config.reload();
                     nxa.getTimer().setCount(0);
+                    try {
+                        nxa.getTimer().cancel();
+                    } catch (Exception e) {
+                    }
+                    long interval = (long) (20L * config.getInterval());
+                    nxa.setTimer(new Timer(nxa));
+                    nxa.getTimer().runTaskTimer(nxa, interval, interval);
                     mm.msg(cs, Msg.CONFIG_RELOAD);
                 } else if (function.equalsIgnoreCase("previous")) {
                     int location = nxa.getTimer().getCount();
@@ -114,7 +121,7 @@ public class Commands implements CommandExecutor {
                     view(config.getAnnouncements().get(location), cs);
                 } else if (function.equalsIgnoreCase("setNext")) {
                     if (args.length > 1) {
-                        int location = 0;
+                        int location;
                         try {
                             location = Integer.parseInt(args[1]);
                         } catch (NumberFormatException e) {
@@ -130,9 +137,12 @@ public class Commands implements CommandExecutor {
                     } else {
                         mm.msg(cs, Msg.COMMAND_USAGE, "/" + cmd.getName() + " setnext &8[&3announcement&8]");
                     }
+                } else {
+                    mm.msg(cs, Msg.COMMAND_USAGE, "/" + cmd.getName() + " &8[&3function&8]");
                 }
+            } else {
+                mm.msg(cs, Msg.COMMAND_USAGE, "/" + cmd.getName() + " &8[&3function&8]");
             }
-            mm.msg(cs, Msg.COMMAND_USAGE, "/" + cmd.getName() + " &8[&3function&8]");
             return true;
         }
         return false;

@@ -1,11 +1,11 @@
-main: com.projectbarks.barksautoannouncer.BarksSimpleAnnouncer
-name: BarksSimpleAnnouncer
+main: com.projectbarks.nxannouncer.NXAnnouncer
+name: NXAnnouncer
 version: 0.2
 author: ProjectBarks
 description: Simple Announcer Plugin.
 
 commands:
-   BarksSimpleAnnouncer:
+   nxannouncer:
       description: Modify and view the NXAnnouncer
       aliases: [announcer]
       usage: /<command> [function]

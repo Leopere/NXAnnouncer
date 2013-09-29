@@ -44,7 +44,6 @@ public abstract class AbstractConfig {
         } catch (Exception ex) {
             Logger.getLogger(AbstractConfig.class.getName()).log(Level.SEVERE, null, ex);
         }
-        loadConfig();
     }
 
     public void save() {

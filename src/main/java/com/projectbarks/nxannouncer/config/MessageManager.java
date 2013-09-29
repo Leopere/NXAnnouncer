@@ -18,18 +18,20 @@ public class MessageManager extends AbstractConfig {
 
     private String name;
     private List<Msg> messages;
+    private String printName;
 
     public MessageManager(Plugin plugin) {
-        this(new File(plugin.getDataFolder(), "commands.yml"));
+        this(new File(plugin.getDataFolder(), "commands.yml"), plugin.getName());
     }
 
-    public MessageManager(File file) {
+    public MessageManager(File file, String name) {
         super(file);
         this.messages = new ArrayList<Msg>();
+        this.printName = name;
     }
 
     protected void loadConfig() {
-        Bukkit.getLogger().log(Level.INFO, "Loading {0} messages", Msg.values().length);
+        Bukkit.getLogger().log(Level.INFO, "[{0}] Loading {1} command Message", new Object[]{printName, Msg.values().length});
 
         name = this.getConfig().getString("name", "&8[&3NXA&8]&7");
         name = ChatColor.translateAlternateColorCodes('&', name);
@@ -39,7 +41,7 @@ public class MessageManager extends AbstractConfig {
             key.setMsg(cmsg);
             this.messages.add(key);
         }
-        Bukkit.getLogger().log(Level.INFO, "Message Loading Completed");
+        Bukkit.getLogger().log(Level.INFO, "Command messages loading completed");
     }
 
     protected void saveConfig() {
