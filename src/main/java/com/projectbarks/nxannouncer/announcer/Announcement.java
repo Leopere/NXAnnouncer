@@ -25,7 +25,7 @@ public class Announcement {
             String cut = s;
             while (cut.length() > maxLength) {
                 int cutlocation = maxLength;
-                while(cut.charAt(cutlocation) != ' ') {
+                while (cut.charAt(cutlocation) != ' ') {
                     cutlocation -= 1;
                 }
                 finalCut.add(cut.substring(0, cutlocation));

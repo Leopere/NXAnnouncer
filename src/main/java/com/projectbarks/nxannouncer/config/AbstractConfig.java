@@ -36,7 +36,7 @@ public abstract class AbstractConfig {
         this.file = file;
     }
 
-    public void load() {        
+    public void load() {
         try {
             fileCheck();
             this.config.load(file);
@@ -44,18 +44,18 @@ public abstract class AbstractConfig {
         } catch (Exception ex) {
             Logger.getLogger(AbstractConfig.class.getName()).log(Level.SEVERE, null, ex);
         }
-        loadConfig();   
+        loadConfig();
     }
-    
+
     public void save() {
         this.saveConfig();
-         try {
+        try {
             this.getConfig().save(file);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      *
      */

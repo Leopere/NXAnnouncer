@@ -3,3 +3,11 @@ name: BarksSimpleAnnouncer
 version: 0.2
 author: ProjectBarks
 description: Simple Announcer Plugin.
+
+commands:
+   BarksSimpleAnnouncer:
+      description: Modify and view the NXAnnouncer
+      aliases: [announcer]
+      usage: /<command> [function]
+      permission: nxannouncer.admin
+      permission-message: You don't have <permission>

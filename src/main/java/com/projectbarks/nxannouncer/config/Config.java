@@ -1,6 +1,6 @@
 package com.projectbarks.nxannouncer.config;
 
-import com.projectbarks.nxannouncer.BarksSimpleAnnouncer;
+import com.projectbarks.nxannouncer.NXAnnouncer;
 import com.projectbarks.nxannouncer.announcer.Announcement;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,7 +30,7 @@ public class Config {
     private File file;
     private String color;
 
-    public Config(BarksSimpleAnnouncer main) {
+    public Config(NXAnnouncer main) {
         this.config = new YamlConfiguration();
         this.announcements = new ArrayList<Announcement>();
         this.file = new File(main.getDataFolder(), "config.yml");
@@ -55,13 +55,19 @@ public class Config {
         noPlayers = config.getBoolean("No Players");
         color = Announcement.colorize(config.getString("Default Message Color", "&7"));
 
-        BarksSimpleAnnouncer.getLOG().log(Level.INFO, "{0}Has loaded {1} message(s).", new Object[]{pluginName, announcements.size()});
+        NXAnnouncer.getLOG().log(Level.INFO, "{0}Has loaded {1} message(s).", new Object[]{pluginName, announcements.size()});
+    }
+
+    public void reload() {
+        this.config = new YamlConfiguration();
+        this.setup();
+        this.load();
     }
 
     public void setup() {
 
         if (!file.exists()) {
-            BarksSimpleAnnouncer.getLOG().log(Level.INFO, "{0}Generating config.yml", pluginName);
+            NXAnnouncer.getLOG().log(Level.INFO, "{0}Generating config.yml", pluginName);
 
             config.set("Interval.Minutes", 5);
             config.set("Interval.Seconds", 0);

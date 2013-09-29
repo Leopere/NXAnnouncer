@@ -1,15 +1,17 @@
 package com.projectbarks.nxannouncer;
 
-import com.projectbarks.nxannouncer.config.Config;
 import com.projectbarks.nxannouncer.announcer.Timer;
+import com.projectbarks.nxannouncer.commands.Commands;
+import com.projectbarks.nxannouncer.config.Config;
+import com.projectbarks.nxannouncer.config.MessageManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class BarksSimpleAnnouncer extends JavaPlugin implements Listener {
-
-    private static final Logger LOG = Logger.getLogger(BarksSimpleAnnouncer.class.getName());
+public class NXAnnouncer extends JavaPlugin implements Listener {
+    
+    private static final Logger LOG = Logger.getLogger(NXAnnouncer.class.getName());
 
     /**
      * @return the LOG
@@ -20,27 +22,33 @@ public class BarksSimpleAnnouncer extends JavaPlugin implements Listener {
     private Font font;
     private Config conf;
     private Timer timer;
-
+    private MessageManager mm;
+    private Commands commands;
+    
     @Override
     public void onLoad() {
         this.conf = new Config(this);
         this.timer = new Timer(this);
+        this.mm = new MessageManager(this);
+        this.commands = new Commands(this);
     }
-
+    
     @Override
     public void onEnable() {
         conf.setup();
         conf.load();
+        mm.load();
         Font.load(this);
-
+        
         if (!conf.isNoPlayers()) {
             getLOG().log(Level.INFO, "Disabling sending messages with 0 players online!");
         }
-
+        
         long interval = (long) (20L * conf.getInterval());
         timer.runTaskTimer(this, interval, interval);
+        getServer().getPluginCommand("barkssimpleAnnouncer").setExecutor(commands);
     }
-
+    
     @Override
     public void onDisable() {
         try {
@@ -69,5 +77,9 @@ public class BarksSimpleAnnouncer extends JavaPlugin implements Listener {
      */
     public Timer getTimer() {
         return timer;
+    }
+    
+    public MessageManager getMm() {
+        return mm;
     }
 }

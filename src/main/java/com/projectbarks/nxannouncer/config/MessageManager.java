@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -18,6 +19,10 @@ public class MessageManager extends AbstractConfig {
     private String name;
     private List<Msg> messages;
 
+    public MessageManager(Plugin plugin) {
+        this(new File(plugin.getDataFolder(), "commands.yml"));
+    }
+
     public MessageManager(File file) {
         super(file);
         this.messages = new ArrayList<Msg>();
@@ -26,15 +31,15 @@ public class MessageManager extends AbstractConfig {
     protected void loadConfig() {
         Bukkit.getLogger().log(Level.INFO, "Loading {0} messages", Msg.values().length);
 
-            name = this.getConfig().getString("name", "&8[&3NXA&8]&7");
-            name = ChatColor.translateAlternateColorCodes('&', name);
+        name = this.getConfig().getString("name", "&8[&3NXA&8]&7");
+        name = ChatColor.translateAlternateColorCodes('&', name);
 
-            for (Msg key : Msg.values()) {
-                String cmsg = this.getConfig().getString("Messages." + key.getName(), key.getMsg());
-                key.setMsg(cmsg);
-                this.messages.add(key);
-            }
-            Bukkit.getLogger().log(Level.INFO, "Message Loading Completed");
+        for (Msg key : Msg.values()) {
+            String cmsg = this.getConfig().getString("Messages." + key.getName(), key.getMsg());
+            key.setMsg(cmsg);
+            this.messages.add(key);
+        }
+        Bukkit.getLogger().log(Level.INFO, "Message Loading Completed");
     }
 
     protected void saveConfig() {

@@ -1,6 +1,6 @@
 package com.projectbarks.nxannouncer.announcer;
 
-import com.projectbarks.nxannouncer.BarksSimpleAnnouncer;
+import com.projectbarks.nxannouncer.NXAnnouncer;
 import com.projectbarks.nxannouncer.config.Config;
 import java.util.logging.Level;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -8,10 +8,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Timer extends BukkitRunnable implements Runnable {
 
     private int count;
-    private BarksSimpleAnnouncer main;
+    private NXAnnouncer main;
     private Config config;
 
-    public Timer(BarksSimpleAnnouncer main) {
+    public Timer(NXAnnouncer main) {
         this.count = 0;
         this.main = main;
         this.config = main.getConf();
@@ -20,10 +20,10 @@ public class Timer extends BukkitRunnable implements Runnable {
     @Override
     public void run() {
         if (main.getServer().getOnlinePlayers().length <= 0 && config.isNoPlayers()) {
-            BarksSimpleAnnouncer.getLOG().log(Level.INFO, "Not enough players broadcast cancled");
+            NXAnnouncer.getLOG().log(Level.INFO, "Not enough players broadcast cancled");
             return;
         }
-        Announcement announcement = config.getAnnouncements().get(count);
+        Announcement announcement = config.getAnnouncements().get(getCount());
         this.broadcast(config.getColor() + announcement.getColorizedHeader());
         for (String message : announcement.getTranslatedMessage()) {
             String colorizedMessage = Announcement.colorize(message);
@@ -33,14 +33,22 @@ public class Timer extends BukkitRunnable implements Runnable {
             this.broadcast(config.getColor() + dynamicChar + colorizedMessage);
         }
         this.broadcast(config.getColor() + announcement.getColorizedFooter());
-        count += 1;
-        if (count + 1 > config.getAnnouncements().size()) {
-            count = 0;
+        setCount(count + 1);
+        if (getCount() >= config.getAnnouncements().size()) {
+            setCount(0);
         }
-        BarksSimpleAnnouncer.getLOG().log(Level.INFO, "{0}Message {1} has been sent to {2} players.", new Object[]{config.getPluginName(), count, main.getServer().getOnlinePlayers().length});
+        NXAnnouncer.getLOG().log(Level.INFO, "{0}Message {1} has been sent to {2} players.", new Object[]{config.getPluginName(), getCount(), main.getServer().getOnlinePlayers().length});
     }
 
     private void broadcast(String message) {
         main.getServer().broadcastMessage(message);
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }
