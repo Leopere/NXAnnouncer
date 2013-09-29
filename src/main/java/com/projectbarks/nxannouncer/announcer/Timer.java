@@ -3,6 +3,8 @@ package com.projectbarks.nxannouncer.announcer;
 import com.projectbarks.nxannouncer.NXAnnouncer;
 import com.projectbarks.nxannouncer.config.Config;
 import java.util.logging.Level;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class Timer extends BukkitRunnable implements Runnable {
@@ -43,7 +45,9 @@ public class Timer extends BukkitRunnable implements Runnable {
     }
 
     private void broadcast(String message) {
-        main.getServer().broadcastMessage(message);
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(message);
+        }
     }
 
     public int getCount() {

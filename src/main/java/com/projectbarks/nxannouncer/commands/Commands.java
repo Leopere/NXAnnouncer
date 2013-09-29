@@ -5,27 +5,29 @@ import com.projectbarks.nxannouncer.announcer.Announcement;
 import com.projectbarks.nxannouncer.announcer.Timer;
 import com.projectbarks.nxannouncer.config.Config;
 import com.projectbarks.nxannouncer.config.MessageManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Brandon Barker
  */
 public class Commands implements CommandExecutor {
-    
+
     private MessageManager mm;
     private Config config;
     private NXAnnouncer nxa;
-    
+
     public Commands(NXAnnouncer main) {
         this.mm = main.getMm();
         this.config = main.getConf();
         this.nxa = main;
-        
+
     }
-    
+
     @Override
     public boolean onCommand(CommandSender cs, Command cmd, String string, String[] args) {
         String cName = cmd.getName();
@@ -80,12 +82,12 @@ public class Commands implements CommandExecutor {
                         if (location > -1 && location < config.getAnnouncements().size()) {
                             mm.msg(cs, Msg.VIEW_INFO, location + "");
                             Announcement announcement = config.getAnnouncements().get(location);
-                            nxa.getServer().broadcastMessage(Announcement.colorize(announcement.getColorizedHeader()));
+                            broadcast(Announcement.colorize(announcement.getColorizedHeader()));
                             for (String message : announcement.getTranslatedMessage()) {
-                                nxa.getServer().broadcastMessage(Announcement.colorize(message));
+                                broadcast(Announcement.colorize(message));
                             }
-                            
-                            nxa.getServer().broadcastMessage(Announcement.colorize(announcement.getColorizedFooter()));
+
+                            broadcast(Announcement.colorize(announcement.getColorizedFooter()));
                         } else {
                             mm.msg(cs, Msg.RANGE_EXCEPTION, 0, config.getAnnouncements().size() - 1);
                         }
@@ -147,7 +149,13 @@ public class Commands implements CommandExecutor {
         }
         return false;
     }
-    
+
+    private void broadcast(String message) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(message);
+        }
+    }
+
     private void view(Announcement announcement, CommandSender cs) {
         cs.sendMessage(announcement.getColorizedHeader());
         for (String message : announcement.getTranslatedMessage()) {
