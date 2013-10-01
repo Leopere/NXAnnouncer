@@ -13,23 +13,22 @@ import org.bukkit.ChatColor;
 public class Announcement {
 
     public static String colorize(String s) {
-        String newString = ChatColor.translateAlternateColorCodes('&', s);
-        return newString;
+        return ChatColor.translateAlternateColorCodes('&', s);
     }
 
     public static List<String> stringTranslate(String start, int maxLength) {
-        List<String> split = new ArrayList<String>();
-        split.addAll(Arrays.asList(start.split("%[nN]")));
         List<String> finalCut = new ArrayList<String>();
-        for (String s : split) {
+        for (String s : start.split("%[nN]")) {
             String cut = s;
-            while (cut.length() > maxLength) {
-                int cutlocation = maxLength;
-                while (cut.charAt(cutlocation) != ' ') {
-                    cutlocation -= 1;
+            if (cut.contains(" ")) {
+                while (cut.length() > maxLength) {
+                    int cutlocation = maxLength;
+                    while (cut.charAt(cutlocation) != ' ') {
+                        cutlocation -= 1;
+                    }
+                    finalCut.add(cut.substring(0, cutlocation));
+                    cut = cut.substring(cutlocation, cut.length());
                 }
-                finalCut.add(cut.substring(0, cutlocation));
-                cut = cut.substring(cutlocation, cut.length());
             }
             finalCut.add(cut);
         }
@@ -61,11 +60,18 @@ public class Announcement {
     private final String message;
     private final String suffixWrapper;
     private final String prefixWrapper;
+    private final String cPrefixWrapper;
+    private final String cSuffixWrapper;
+    private final List<String> translated;
 
     public Announcement(String message, String footer, String header) {
         this.message = message;
         this.suffixWrapper = footer;
         this.prefixWrapper = header;
+        this.cPrefixWrapper = colorize(prefixWrapper);
+        this.cSuffixWrapper = colorize(suffixWrapper);
+        this.translated = new ArrayList<String>();
+        translated.addAll(stringTranslate(message, Math.round((prefixWrapper.length() + suffixWrapper.length()) / 2)));
     }
 
     public String getMessage() {
@@ -81,14 +87,14 @@ public class Announcement {
     }
 
     public String getColorizedHeader() {
-        return colorize(prefixWrapper);
+        return cPrefixWrapper;
     }
 
     public String getColorizedFooter() {
-        return colorize(suffixWrapper);
+        return cSuffixWrapper;
     }
 
     public List<String> getTranslatedMessage() {
-        return stringTranslate(message, Math.round((prefixWrapper.length() + suffixWrapper.length()) / 2));
+        return this.translated;
     }
 }

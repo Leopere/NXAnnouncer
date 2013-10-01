@@ -10,11 +10,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -26,12 +26,13 @@ public class Config {
     private boolean noPlayers;
     private String pluginName;
     private List<Announcement> announcements;
-    private YamlConfiguration config;
+    private FileConfiguration config;
     private File file;
     private String color;
+    private Plugin plugin;
 
     public Config(NXAnnouncer main) {
-        this.config = new YamlConfiguration();
+        this.config = main.getConfig();
         this.announcements = new ArrayList<Announcement>();
         this.file = new File(main.getDataFolder(), "config.yml");
         this.interval = 5;
@@ -40,15 +41,6 @@ public class Config {
     }
 
     public void load() {
-        try {
-            this.config.load(file);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidConfigurationException ex) {
-            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
-        }
         announcements.clear();
         announcements.addAll(getAnnouncements(config.getConfigurationSection("Announcements")));
         interval = config.getInt("Interval.Minutes", 5) * 60 + config.getInt("Interval.Seconds", 0);
@@ -59,16 +51,14 @@ public class Config {
     }
 
     public void reload() {
-        this.config = new YamlConfiguration();
-        this.setup();
-        this.load();
+        plugin.reloadConfig();
+        this.config = plugin.getConfig();
     }
 
     public void setup() {
 
         if (!file.exists()) {
             NXAnnouncer.getLOG().log(Level.INFO, "{0}Generating config.yml", pluginName);
-
             config.set("Interval.Minutes", 5);
             config.set("Interval.Seconds", 0);
             config.set("No Players", true);
@@ -96,23 +86,14 @@ public class Config {
         return a;
     }
 
-    /**
-     * @return the Messages
-     */
     public List<Announcement> getAnnouncements() {
         return announcements;
     }
 
-    /**
-     * @return the noPlayers
-     */
     public boolean isNoPlayers() {
         return noPlayers;
     }
 
-    /**
-     * @return the interval
-     */
     public double getInterval() {
         return interval;
     }

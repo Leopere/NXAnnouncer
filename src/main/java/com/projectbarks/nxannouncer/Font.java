@@ -6,12 +6,10 @@ import org.bukkit.plugin.Plugin;
 
 public class Font {
 
-    private static Plugin main;
     private static Integer[] widths;
 
     public static void load(Plugin plugin) {
         widths = new Integer[0xFFFF];
-
         try {
             InputStream in = plugin.getResource("font.bin");
             for (int i = 0; i < getWidths().length; i++) {
