@@ -2,26 +2,32 @@ package com.projectbarks.nxannouncer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Font extends BukkitRunnable {
+public class FontManager extends BukkitRunnable {
 
     private Integer[] widths;
     private boolean loaded;
     private InputStream in;
+    private AnnouncerFinalizer finishEnable;
+    private NXAnnouncer plugin;
 
-    public Font(InputStream in) {
+    public FontManager(InputStream in, NXAnnouncer plugin) {
         this.loaded = false;
         this.in = in;
+        this.plugin = plugin;
     }
-    
+
     @Override
     public void run() {
         this.load();
+        finishEnable = new AnnouncerFinalizer(plugin);
+        finishEnable.runTaskLater(plugin, 1L);
     }
 
     private void load() {
-        
+
         widths = new Integer[0xFFFF];
         try {
             for (int i = 0; i < getWidths().length; i++) {
@@ -69,5 +75,9 @@ public class Font extends BukkitRunnable {
 
     public boolean isLoaded() {
         return loaded;
+    }
+
+    public AnnouncerFinalizer getFinishEnable() {
+        return finishEnable;
     }
 }

@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class NXAnnouncer extends JavaPlugin implements Listener {
 
     private static final Logger LOG = Logger.getLogger(NXAnnouncer.class.getName());
-    private static Font font;
+    private static FontManager font;
 
     /**
      * @return the LOG
@@ -21,11 +21,11 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
         return LOG;
     }
 
-    public static Font getFont() {
+    public static FontManager getFont() {
         return font;
     }
 
-    public static void setFont(Font font) throws Exception {
+    public static void setFont(FontManager font) throws Exception {
         if (NXAnnouncer.font != null) {
             throw new Exception("Font has alrady been initilized");
         }
@@ -35,7 +35,6 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
     private Timer timer;
     private MessageManager mm;
     private Commands commands;
-    private FinishEnable finishEnable;
 
     @Override
     public void onLoad() {
@@ -48,7 +47,7 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         try {
-            setFont(new Font(this.getResource("font.bin")));
+            setFont(new FontManager(this.getResource("font.bin"), this));
         } catch (Exception ex) {
             Logger.getLogger(NXAnnouncer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -56,8 +55,6 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
         mm.load();
         mm.save();
         //We create the font loading thregad
-        finishEnable = new FinishEnable(this);
-        finishEnable.runTaskTimer(this, 20L, 20L);
         font.runTaskLaterAsynchronously(this, 0L);
 
         if (!conf.isNoPlayers()) {
@@ -71,11 +68,11 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
     public void onDisable() {
         try {
             timer.cancel();
+            font.cancel();
+            font.getFinishEnable().cancel();
             this.conf.getAnnouncements().clear();
-            finishEnable.cancel();
         } catch (Exception ex) {
         }
-        font.cancel();
     }
 
     public Config getConf() {

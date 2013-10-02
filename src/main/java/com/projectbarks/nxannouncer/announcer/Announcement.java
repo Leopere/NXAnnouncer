@@ -1,6 +1,6 @@
 package com.projectbarks.nxannouncer.announcer;
 
-import com.projectbarks.nxannouncer.Font;
+import com.projectbarks.nxannouncer.FontManager;
 import com.projectbarks.nxannouncer.NXAnnouncer;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class Announcement {
         String stripedColor = ChatColor.stripColor(message);
         String newHeader = ChatColor.stripColor(header);
         String newFooter = ChatColor.stripColor(footer);
-        Font font = NXAnnouncer.getFont();
+        FontManager font = NXAnnouncer.getFont();
         if (message.contains(ChatColor.BOLD + "")) {
             size = font.getStringWidthBold(stripedColor);
         } else {
