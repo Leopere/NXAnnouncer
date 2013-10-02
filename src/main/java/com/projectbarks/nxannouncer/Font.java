@@ -2,9 +2,9 @@ package com.projectbarks.nxannouncer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class Font implements Runnable {
+public class Font extends BukkitRunnable {
 
     private Integer[] widths;
     private boolean loaded;

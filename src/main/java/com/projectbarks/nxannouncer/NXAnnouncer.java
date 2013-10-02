@@ -35,7 +35,7 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
     private Timer timer;
     private MessageManager mm;
     private Commands commands;
-    private Thread fontManager;
+    private FinishEnable finishEnable;
 
     @Override
     public void onLoad() {
@@ -56,10 +56,9 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
         mm.load();
         mm.save();
         //We create the font loading thregad
-        FinishEnable finishEnable = new FinishEnable(this);
+        finishEnable = new FinishEnable(this);
         finishEnable.runTaskTimer(this, 20L, 20L);
-        fontManager = new Thread(font);
-        fontManager.start();
+        font.runTaskLaterAsynchronously(this, 0L);
 
         if (!conf.isNoPlayers()) {
             getLOG().log(Level.INFO, "Disabling sending messages with 0 players online!");
@@ -73,9 +72,10 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
         try {
             timer.cancel();
             this.conf.getAnnouncements().clear();
+            finishEnable.cancel();
         } catch (Exception ex) {
         }
-        fontManager.interrupt();
+        font.cancel();
     }
 
     public Config getConf() {
