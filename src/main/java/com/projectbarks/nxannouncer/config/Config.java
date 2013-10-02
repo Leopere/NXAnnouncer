@@ -14,7 +14,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -29,10 +28,9 @@ public class Config {
     private FileConfiguration config;
     private File file;
     private String color;
-    private Plugin plugin;
 
     public Config(NXAnnouncer main) {
-        this.config = main.getConfig();
+        this.config = new YamlConfiguration();
         this.announcements = new ArrayList<Announcement>();
         this.file = new File(main.getDataFolder(), "config.yml");
         this.interval = 5;
@@ -41,6 +39,15 @@ public class Config {
     }
 
     public void load() {
+        try {
+            this.config.load(file);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidConfigurationException ex) {
+            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
+        }
         announcements.clear();
         announcements.addAll(getAnnouncements(config.getConfigurationSection("Announcements")));
         interval = config.getInt("Interval.Minutes", 5) * 60 + config.getInt("Interval.Seconds", 0);
@@ -51,8 +58,9 @@ public class Config {
     }
 
     public void reload() {
-        plugin.reloadConfig();
-        this.config = plugin.getConfig();
+        this.config = new YamlConfiguration();
+        this.setup();
+        this.load();
     }
 
     public void setup() {

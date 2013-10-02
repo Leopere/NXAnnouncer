@@ -1,8 +1,8 @@
 package com.projectbarks.nxannouncer.announcer;
 
 import com.projectbarks.nxannouncer.Font;
+import com.projectbarks.nxannouncer.NXAnnouncer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.bukkit.ChatColor;
 
@@ -40,14 +40,17 @@ public class Announcement {
         String stripedColor = ChatColor.stripColor(message);
         String newHeader = ChatColor.stripColor(header);
         String newFooter = ChatColor.stripColor(footer);
+        Font font = NXAnnouncer.getFont();
         if (message.contains(ChatColor.BOLD + "")) {
-            size = Font.getStringWidthBold(stripedColor);
+            size = font.getStringWidthBold(stripedColor);
         } else {
-            size = Font.getStringWidth(stripedColor);
+            size = font.getStringWidth(stripedColor);
         }
 
-        Integer spacer = Math.round(size / Font.getStringWidth(" "));
-        Integer wrap = Math.round(((Font.getStringWidth(newFooter) + Font.getStringWidth(newHeader)) / 2) / Font.getStringWidth(" "));
+        Integer spacer = Math.round(size / font.getStringWidth(" "));
+        Integer wrap = Math.round(((font.getStringWidth(newFooter)
+                                    + font.getStringWidth(newHeader)) / 2)
+                                  / font.getStringWidth(" "));
         spacer = Math.abs(wrap - spacer);
         spacer = Math.round(spacer / 2);
 

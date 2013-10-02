@@ -4,14 +4,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.bukkit.plugin.Plugin;
 
-public class Font {
+public class Font implements Runnable {
 
-    private static Integer[] widths;
+    private Integer[] widths;
+    private boolean loaded;
+    private InputStream in;
 
-    public static void load(Plugin plugin) {
+    public Font(InputStream in) {
+        this.loaded = false;
+        this.in = in;
+    }
+    
+    @Override
+    public void run() {
+        this.load();
+    }
+
+    private void load() {
+        
         widths = new Integer[0xFFFF];
         try {
-            InputStream in = plugin.getResource("font.bin");
             for (int i = 0; i < getWidths().length; i++) {
                 widths[i] = in.read();
             }
@@ -19,9 +31,10 @@ public class Font {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        loaded = true;
     }
 
-    public static int getStringWidth(String str) {
+    public int getStringWidth(String str) {
         int width = 0;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
@@ -34,7 +47,7 @@ public class Font {
         return width;
     }
 
-    public static int getStringWidthBold(String str) {
+    public int getStringWidthBold(String str) {
         int width = 0;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
@@ -50,10 +63,11 @@ public class Font {
     /**
      * @return the widths
      */
-    public static Integer[] getWidths() {
+    public Integer[] getWidths() {
         return widths.clone();
     }
 
-    private Font() {
+    public boolean isLoaded() {
+        return loaded;
     }
 }

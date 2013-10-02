@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class NXAnnouncer extends JavaPlugin implements Listener {
 
     private static final Logger LOG = Logger.getLogger(NXAnnouncer.class.getName());
+    private static Font font;
 
     /**
      * @return the LOG
@@ -19,11 +20,22 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
     public static Logger getLOG() {
         return LOG;
     }
-    private Font font;
+
+    public static Font getFont() {
+        return font;
+    }
+
+    public static void setFont(Font font) throws Exception {
+        if (NXAnnouncer.font != null) {
+            throw new Exception("Font has alrady been initilized");
+        }
+        NXAnnouncer.font = font;
+    }
     private Config conf;
     private Timer timer;
     private MessageManager mm;
     private Commands commands;
+    private Thread fontManager;
 
     @Override
     public void onLoad() {
@@ -35,18 +47,24 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        try {
+            setFont(new Font(this.getResource("font.bin")));
+        } catch (Exception ex) {
+            Logger.getLogger(NXAnnouncer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         conf.setup();
-        conf.load();
         mm.load();
         mm.save();
-        Font.load(this);
+        //We create the font loading thregad
+        FinishEnable finishEnable = new FinishEnable(this);
+        finishEnable.runTaskTimer(this, 20L, 20L);
+        fontManager = new Thread(font);
+        fontManager.start();
 
         if (!conf.isNoPlayers()) {
             getLOG().log(Level.INFO, "Disabling sending messages with 0 players online!");
         }
 
-        long interval = (long) (20L * conf.getInterval());
-        timer.runTaskTimer(this, interval, interval);
         this.getServer().getPluginCommand("nxannouncer").setExecutor(commands);
     }
 
@@ -57,25 +75,13 @@ public class NXAnnouncer extends JavaPlugin implements Listener {
             this.conf.getAnnouncements().clear();
         } catch (Exception ex) {
         }
+        fontManager.interrupt();
     }
 
-    /**
-     * @return the conf
-     */
     public Config getConf() {
         return conf;
     }
 
-    /**
-     * @return the font
-     */
-    public Font getFont() {
-        return font;
-    }
-
-    /**
-     * @return the timer
-     */
     public Timer getTimer() {
         return timer;
     }

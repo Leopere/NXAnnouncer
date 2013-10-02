@@ -45,7 +45,7 @@ public class Timer extends BukkitRunnable implements Runnable {
     }
 
     private void broadcast(String message) {
-        for(Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(message);
         }
     }
