@@ -1,8 +1,8 @@
 main: com.projectbarks.nxannouncer.NXAnnouncer
 name: NXAnnouncer
-version: 0.2
+version: 1.5.0
 author: ProjectBarks
-description: Simple Announcer Plugin.
+description: Elegant but simple 
 
 commands:
    nxannouncer:
