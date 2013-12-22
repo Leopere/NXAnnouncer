@@ -1,0 +1,13 @@
+main: com.projectbarks.nxannouncer.NXAnnouncer
+name: NXAnnouncer
+version: 1.5.0
+author: ProjectBarks
+description: Elegant but simple 
+
+commands:
+   nxannouncer:
+      description: Modify and view the NXAnnouncer
+      aliases: [announcer]
+      usage: /<command> [function]
+      permission: nxannouncer.admin
+      permission-message: You don't have <permission>
