@@ -2,6 +2,13 @@ package com.projectbarks.nxannouncer.config;
 
 import com.projectbarks.nxannouncer.NXAnnouncer;
 import com.projectbarks.nxannouncer.announcer.Announcement;
+import lombok.Getter;
+import lombok.extern.java.Log;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,24 +17,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
- *
  * @author Brandon Barker
  */
+@Log
 public class Config {
 
+    @Getter
     private double interval;
+    @Getter
     private boolean noPlayers;
-    private String pluginName;
+    @Getter
+    private final String pluginName;
+    @Getter
     private List<Announcement> announcements;
+    @Getter
+    private String color;
     private FileConfiguration config;
     private File file;
-    private String color;
 
     public Config(NXAnnouncer main) {
         this.config = new YamlConfiguration();
@@ -54,7 +62,7 @@ public class Config {
         noPlayers = config.getBoolean("No Players");
         color = Announcement.colorize(config.getString("Default Message Color", "&7"));
 
-        NXAnnouncer.getLOG().log(Level.INFO, "{0}Has loaded {1} message(s).", new Object[]{pluginName, announcements.size()});
+        log.log(Level.INFO, "{0}Has loaded {1} message(s).", new Object[]{pluginName, announcements.size()});
     }
 
     public void reload() {
@@ -66,7 +74,7 @@ public class Config {
     public void setup() {
 
         if (!file.exists()) {
-            NXAnnouncer.getLOG().log(Level.INFO, "{0}Generating config.yml", pluginName);
+            log.log(Level.INFO, "{0}Generating config.yml", pluginName);
             config.set("Interval.Minutes", 5);
             config.set("Interval.Seconds", 0);
             config.set("No Players", true);
@@ -92,25 +100,5 @@ public class Config {
             }
         }
         return a;
-    }
-
-    public List<Announcement> getAnnouncements() {
-        return announcements;
-    }
-
-    public boolean isNoPlayers() {
-        return noPlayers;
-    }
-
-    public double getInterval() {
-        return interval;
-    }
-
-    public String getPluginName() {
-        return this.pluginName;
-    }
-
-    public String getColor() {
-        return color;
     }
 }

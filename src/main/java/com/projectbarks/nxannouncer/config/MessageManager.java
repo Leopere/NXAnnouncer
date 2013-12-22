@@ -1,21 +1,23 @@
 package com.projectbarks.nxannouncer.config;
 
 import com.projectbarks.nxannouncer.commands.Msg;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
 /**
- *
  * @author Brandon Barker
  */
 public class MessageManager extends AbstractConfig {
 
+    @Getter
     private String name;
     private List<Msg> messages;
     private String printName;
@@ -37,8 +39,8 @@ public class MessageManager extends AbstractConfig {
         name = ChatColor.translateAlternateColorCodes('&', name);
 
         for (Msg key : Msg.values()) {
-            String cmsg = this.getConfig().getString("Messages." + key.getName(), key.getMsg());
-            key.setMsg(cmsg);
+            String cmsg = this.getConfig().getString("Messages." + key.getName(), key.getMessage());
+            key.setMessage(cmsg);
             this.messages.add(key);
         }
         Bukkit.getLogger().log(Level.INFO, "Command messages loading completed");
@@ -48,50 +50,44 @@ public class MessageManager extends AbstractConfig {
         this.getConfig().set("name", name);
 
         for (Msg msg : this.messages) {
-            this.getConfig().set("Messages." + msg.getName(), msg.getMsg());
+            this.getConfig().set("Messages." + msg.getName(), msg.getMessage());
         }
     }
 
-    public String getMsg(Msg format) {
+    public String getMessage(Msg format) {
         Msg target = format;
         for (Msg msg : this.messages) {
             if (msg.getName().equalsIgnoreCase(format.getName())) {
                 target = msg;
             }
         }
-        String colorMsg = ChatColor.translateAlternateColorCodes('&', name + " " + target.getMsg());
-        return colorMsg;
+        return ChatColor.translateAlternateColorCodes('&', name + " " + target.getMessage());
     }
 
-    public String getMsg(Msg format, Object... args) {
+    public String getMessage(Msg format, Object... args) {
         Msg target = format;
         for (Msg msg : this.messages) {
             if (msg.getName().equalsIgnoreCase(format.getName())) {
                 target = msg;
             }
         }
-        String newMsg = String.format(target.getMsg(), args);
-        String colorMsg = ChatColor.translateAlternateColorCodes('&', name + " " + newMsg);
-        return colorMsg;
-    }
-
-    public String getName() {
-        return this.name;
+        String newMsg = String.format(target.getMessage(), args);
+        return ChatColor.translateAlternateColorCodes('&', name + " " + newMsg);
     }
 
     public void msg(CommandSender sender, Msg message) {
-        sender.sendMessage(this.getMsg(message));
+        sender.sendMessage(this.getMessage(message));
     }
 
     public void msg(CommandSender sender, Msg message, Object... args) {
-        sender.sendMessage(this.getMsg(message, args));
+        sender.sendMessage(this.getMessage(message, args));
     }
 
     public void broadcast(Msg message) {
-        Bukkit.getServer().broadcastMessage(this.getMsg(message));
+        Bukkit.getServer().broadcastMessage(this.getMessage(message));
     }
 
     public void broadcast(Msg message, Object... args) {
-        Bukkit.getServer().broadcastMessage(this.getMsg(message, args));
+        Bukkit.getServer().broadcastMessage(this.getMessage(message, args));
     }
 }

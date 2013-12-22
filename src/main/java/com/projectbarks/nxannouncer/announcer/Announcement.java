@@ -2,12 +2,13 @@ package com.projectbarks.nxannouncer.announcer;
 
 import com.projectbarks.nxannouncer.FontManager;
 import com.projectbarks.nxannouncer.NXAnnouncer;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author Brandon Barker
  */
 public class Announcement {
@@ -22,12 +23,12 @@ public class Announcement {
             String cut = s;
             if (cut.contains(" ")) {
                 while (cut.length() > maxLength) {
-                    int cutlocation = maxLength;
-                    while (cut.charAt(cutlocation) != ' ') {
-                        cutlocation -= 1;
+                    int cutLocation = maxLength;
+                    while (cut.charAt(cutLocation) != ' ') {
+                        cutLocation -= 1;
                     }
-                    finalCut.add(cut.substring(0, cutlocation));
-                    cut = cut.substring(cutlocation, cut.length());
+                    finalCut.add(cut.substring(0, cutLocation));
+                    cut = cut.substring(cutLocation, cut.length());
                 }
             }
             finalCut.add(cut);
@@ -49,8 +50,8 @@ public class Announcement {
 
         Integer spacer = Math.round(size / font.getStringWidth(" "));
         Integer wrap = Math.round(((font.getStringWidth(newFooter)
-                                    + font.getStringWidth(newHeader)) / 2)
-                                  / font.getStringWidth(" "));
+                + font.getStringWidth(newHeader)) / 2)
+                / font.getStringWidth(" "));
         spacer = Math.abs(wrap - spacer);
         spacer = Math.round(spacer / 2);
 
@@ -60,44 +61,27 @@ public class Announcement {
         }
         return spaces;
     }
+
+    @Getter
     private final String message;
-    private final String suffixWrapper;
-    private final String prefixWrapper;
-    private final String cPrefixWrapper;
-    private final String cSuffixWrapper;
-    private final List<String> translated;
+    @Getter
+    private final String footer;
+    @Getter
+    private final String header;
+    @Getter
+    private final String colorizedHeader;
+    @Getter
+    private final String colorizedFooter;
+    @Getter
+    private final List<String> translatedMessage;
 
     public Announcement(String message, String footer, String header) {
         this.message = message;
-        this.suffixWrapper = footer;
-        this.prefixWrapper = header;
-        this.cPrefixWrapper = colorize(prefixWrapper);
-        this.cSuffixWrapper = colorize(suffixWrapper);
-        this.translated = new ArrayList<String>();
-        translated.addAll(stringTranslate(message, Math.round((prefixWrapper.length() + suffixWrapper.length()) / 2)));
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getFooter() {
-        return suffixWrapper;
-    }
-
-    public String getHeader() {
-        return prefixWrapper;
-    }
-
-    public String getColorizedHeader() {
-        return cPrefixWrapper;
-    }
-
-    public String getColorizedFooter() {
-        return cSuffixWrapper;
-    }
-
-    public List<String> getTranslatedMessage() {
-        return this.translated;
+        this.footer = footer;
+        this.header = header;
+        this.colorizedHeader = colorize(header);
+        this.colorizedFooter = colorize(footer);
+        this.translatedMessage = new ArrayList<String>();
+        translatedMessage.addAll(stringTranslate(message, Math.round((header.length() + footer.length()) / 2)));
     }
 }

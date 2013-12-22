@@ -5,21 +5,24 @@ import com.projectbarks.nxannouncer.announcer.Announcement;
 import com.projectbarks.nxannouncer.announcer.Timer;
 import com.projectbarks.nxannouncer.config.Config;
 import com.projectbarks.nxannouncer.config.MessageManager;
+import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.logging.Level;
+
 /**
- *
  * @author Brandon Barker
  */
+@Log
 public class Commands implements CommandExecutor {
 
-    private MessageManager mm;
-    private Config config;
-    private NXAnnouncer nxa;
+    private final MessageManager mm;
+    private final Config config;
+    private final NXAnnouncer nxa;
 
     public Commands(NXAnnouncer main) {
         this.mm = main.getMm();
@@ -100,6 +103,7 @@ public class Commands implements CommandExecutor {
                     try {
                         nxa.getTimer().cancel();
                     } catch (Exception e) {
+                        log.log(Level.WARNING, "Timer encountered Error!");
                     }
                     long interval = (long) (20L * config.getInterval());
                     nxa.setTimer(new Timer(nxa));

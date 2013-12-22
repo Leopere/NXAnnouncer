@@ -1,15 +1,19 @@
 package com.projectbarks.nxannouncer;
 
+import lombok.Getter;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import java.io.IOException;
 import java.io.InputStream;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class FontManager extends BukkitRunnable {
 
+    @Getter
     private Integer[] widths;
+    @Getter
     private boolean loaded;
     private InputStream in;
+    @Getter
     private AnnouncerFinalizer finishEnable;
     private NXAnnouncer plugin;
 
@@ -64,20 +68,5 @@ public class FontManager extends BukkitRunnable {
             }
         }
         return width;
-    }
-
-    /**
-     * @return the widths
-     */
-    public Integer[] getWidths() {
-        return widths.clone();
-    }
-
-    public boolean isLoaded() {
-        return loaded;
-    }
-
-    public AnnouncerFinalizer getFinishEnable() {
-        return finishEnable;
     }
 }

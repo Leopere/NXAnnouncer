@@ -1,9 +1,12 @@
 package com.projectbarks.nxannouncer.commands;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+
 import java.util.Locale;
 
 /**
- *
  * @author Brandon Barker
  */
 public enum Msg {
@@ -18,6 +21,10 @@ public enum Msg {
     NUMBER_EXCEPTION("Argument &8[&3%s&8] must be numeric!"),
     ANNOUNCEMENT_SET("Next announcement set to &8[&3%s&8]s"),
     CONFIG_RELOAD("successfully reloaded config!");
+
+    @Getter
+    @Setter
+    @NonNull
     private String message;
 
     Msg(String message) {
@@ -25,22 +32,9 @@ public enum Msg {
     }
 
     /**
-     *
      * @return
      */
     public String getName() {
         return this.toString().toUpperCase(Locale.getDefault());
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getMsg() {
-        return this.message;
-    }
-
-    public void setMsg(String message) {
-        this.message = message;
     }
 }

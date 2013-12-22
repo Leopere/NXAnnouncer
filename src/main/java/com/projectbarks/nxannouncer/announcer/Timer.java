@@ -2,13 +2,21 @@ package com.projectbarks.nxannouncer.announcer;
 
 import com.projectbarks.nxannouncer.NXAnnouncer;
 import com.projectbarks.nxannouncer.config.Config;
-import java.util.logging.Level;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.java.Log;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.logging.Level;
+
+@Log
 public class Timer extends BukkitRunnable implements Runnable {
 
+    @Getter
+    @Setter
     private int count;
     private NXAnnouncer main;
     private Config config;
@@ -23,7 +31,7 @@ public class Timer extends BukkitRunnable implements Runnable {
     public void run() {
         if (config.getAnnouncements().size() > 0) {
             if (main.getServer().getOnlinePlayers().length <= 0 && config.isNoPlayers()) {
-                NXAnnouncer.getLOG().log(Level.INFO, "Not enough players broadcast canceled");
+                log.log(Level.INFO, "Not enough players broadcast canceled");
                 return;
             }
             Announcement announcement = config.getAnnouncements().get(getCount());
@@ -31,16 +39,20 @@ public class Timer extends BukkitRunnable implements Runnable {
             for (String message : announcement.getTranslatedMessage()) {
                 String colorizedMessage = Announcement.colorize(message);
                 String dynamicChar = Announcement.formatChar(colorizedMessage,
-                                                             announcement.getColorizedHeader(),
-                                                             announcement.getColorizedFooter());
-                this.broadcast(config.getColor() + dynamicChar + colorizedMessage);
+                        announcement.getColorizedHeader(),
+                        announcement.getColorizedFooter());
+                String wrappedColor = ChatColor.getLastColors(colorizedMessage);
+                if (wrappedColor.length() <= 0) {
+                    wrappedColor = ChatColor.getLastColors(colorizedMessage);
+                }
+                this.broadcast(wrappedColor + dynamicChar + colorizedMessage);
             }
             this.broadcast(config.getColor() + announcement.getColorizedFooter());
             setCount(count + 1);
             if (getCount() >= config.getAnnouncements().size()) {
                 setCount(0);
             }
-            NXAnnouncer.getLOG().log(Level.INFO, "{0}Message {1} has been sent to {2} players.", new Object[]{config.getPluginName(), getCount(), main.getServer().getOnlinePlayers().length});
+            log.log(Level.INFO, "{0}Message {1} has been sent to {2} players.", new Object[]{config.getPluginName(), getCount(), main.getServer().getOnlinePlayers().length});
         }
     }
 
@@ -48,13 +60,5 @@ public class Timer extends BukkitRunnable implements Runnable {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendMessage(message);
         }
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
     }
 }

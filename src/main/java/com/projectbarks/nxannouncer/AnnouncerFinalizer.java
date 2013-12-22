@@ -3,12 +3,11 @@ package com.projectbarks.nxannouncer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
- *
  * @author Brandon Barker
  */
 public class AnnouncerFinalizer extends BukkitRunnable {
 
-    private NXAnnouncer nxa;
+    private final NXAnnouncer nxa;
 
     public AnnouncerFinalizer(NXAnnouncer nxa) {
         this.nxa = nxa;

@@ -1,25 +1,36 @@
 package com.projectbarks.nxannouncer.config;
 
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author Brandon Barker
  */
 public abstract class AbstractConfig {
 
     //Fields//
     //-----Fields Final-----//
-    protected final YamlConfiguration config;
+
+    /**
+     * Returns the YALM configuration.
+     *
+     * @return the config
+     */
+    @Getter(AccessLevel.PROTECTED)
+    protected YamlConfiguration config;
     //-----Fields Default-----//
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
     protected File file;
 
     /**
-     *
      * @param plugin
      * @param filename
      */
@@ -28,7 +39,6 @@ public abstract class AbstractConfig {
     }
 
     /**
-     *
      * @param file
      */
     public AbstractConfig(File file) {
@@ -55,6 +65,12 @@ public abstract class AbstractConfig {
         }
     }
 
+    public void reload() {
+        this.config = new YamlConfiguration();
+        this.load();
+        this.save();
+    }
+
     /**
      *
      */
@@ -66,6 +82,7 @@ public abstract class AbstractConfig {
     abstract protected void saveConfig();
 
     //-----Protected Mutators-----//
+
     /**
      * Internal method, creates the file if it doesn't exist
      *
@@ -78,32 +95,4 @@ public abstract class AbstractConfig {
         }
     }
 
-    //-----Protected Final Mutators-----//
-    /**
-     * Returns the YALM configuration.
-     *
-     * @return the config
-     */
-    protected YamlConfiguration getConfig() {
-        return config;
-    }
-
-    /**
-     * Gets the file designated to the config. This can be defaulted to null if
-     * not created properly.
-     *
-     * @return the file
-     */
-    protected File getFile() {
-        return file;
-    }
-
-    /**
-     * Sets the file designated to the config.
-     *
-     * @param file the file to set
-     */
-    protected void setFile(File file) {
-        this.file = file;
-    }
 }
