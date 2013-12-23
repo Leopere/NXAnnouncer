@@ -36,16 +36,17 @@ public class Timer extends BukkitRunnable implements Runnable {
             }
             Announcement announcement = config.getAnnouncements().get(getCount());
             this.broadcast(config.getColor() + announcement.getColorizedHeader());
+
+            String wrappedColor = config.getColor();
             for (String message : announcement.getTranslatedMessage()) {
                 String colorizedMessage = Announcement.colorize(message);
-                String dynamicChar = Announcement.formatChar(colorizedMessage,
-                        announcement.getColorizedHeader(),
-                        announcement.getColorizedFooter());
-                String wrappedColor = ChatColor.getLastColors(colorizedMessage);
-                if (wrappedColor.length() <= 0) {
-                    wrappedColor = ChatColor.getLastColors(colorizedMessage);
+                colorizedMessage = wrappedColor + colorizedMessage;
+                String dynamicChar = Announcement.formatChar(colorizedMessage, announcement.getColorizedHeader(), announcement.getColorizedFooter());
+                this.broadcast(dynamicChar + colorizedMessage);
+                String color = ChatColor.getLastColors(colorizedMessage);
+                if (color.length() > 0) {
+                    wrappedColor = color;
                 }
-                this.broadcast(wrappedColor + dynamicChar + colorizedMessage);
             }
             this.broadcast(config.getColor() + announcement.getColorizedFooter());
             setCount(count + 1);

@@ -39,4 +39,18 @@
             <version>0.11.8</version>
         </dependency>
     </dependencies>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <defaultGoal>clean package install</defaultGoal>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.yml</include>
+                    <include>*.bin</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 </project>
